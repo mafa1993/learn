@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+</body>
+<script>
+    /*  ArrayBuffer 代表内存中一段二进制数据
+     *  TypedArray  9种  int8Array Float64Array等
+     *  DataView  复合形式的数据类型
+     */
+    var worker = new Worker('thread.js'); //启动多线程, 在另一个线程执行文件
+    //接收到消息后触发的回调
+    worker.onmessage = function (e) {
+
+
+    };
+    //申请内存
+    const sharedBuffer = new SharedArrayBuffer(1024);//相当于ArrayBuffer, 申请一个定长的栈,1024个字节
+    const sharedMemory = new Int32Array(sharedBuffer);//这1024个字节的栈存放32位(4个字节)的数据类型, 一个元素占用4个字节, 也就是能存储1024/4=256个字符  参考 https://www.cnblogs.com/gradolabs/p/4762134.html
+    //typedArray 一般三个参数 占用的内存块, [起始位置=0, 个数=end]
+    //给内存中传入数据
+    var len = sharedMemory.length;
+    console.log('ArrayLen:',len);
+    for(let i=0;i<len;++i){
+        sharedMemory[i] = i;
+    }
+    //向另一个线程发送消息
+    worker.postMessage(sharedMemory);
+    /*
+    Atomics.store(sharedMemory,255,0);
+    Atomics.wake(sharedMemory,0,1);  //Atomics只能对共享内存的数据进行验证枷锁
+    */
+
+    //利用FileReader对象进行字符串的转换, 中间需要使用blob对象
+    var str = new Blob(['hello world'],{type:'text:/plain'});  //一定要加[]
+    var reader = new FileReader();
+    reader.readAsArrayBuffer(str);
+    //读取完成后触发
+    reader.onload=function () {
+        console.log('reader result:',reader.result); //这里输出的为int8和unit8的buffer, 所以下面用8  字符串转bufferhttps://www.cnblogs.com/tianma3798/p/5834598.html
+        var buf = new Int8Array(reader.result);
+        worker.postMessage(buf);
+    }
+
+</script>
+</html>

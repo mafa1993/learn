@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+<meta chartset='utf-8' />
+<title>requirejs 原理,简单requirejs功能的实现</title>
+</head>
+<body>
+</body>
+<script type="text/javascript" src='require.js'></script>
+<script>
+require(['a','b'],function(a,b){  //前面为数组依赖, 后面为回调, 参数为define以后模块对外的接口
+	a.add();
+	b.say();
+})
+</script>
+</html>
+

@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<template id="hello-world">
+<h1>hello world!</h1>
+</template>
+<script>  <!--利用js对自定义标签进行导出-->
+var dom = document;
+//console.log(dom.getElementById('custom'));  //可以获取到
+//console.log(dom.getElementById('hello-world')); //null 获取不到
+var scriptDom = document.currentScript.ownerDocument; //执行当前脚本的dom
+//console.log(scriptDom.getElementById('custom')); //null 获取不到 
+//console.log(scriptDom.getElementById('hello-world')); //可以获取到
+console.log(dom);
+console.log(scriptDom);
+var exPrototype = Object.create(HTMLElement.prototype); //Object.create给一个对象创建prototype属性, 这里就是让自定义标签有HTMLElement对象的所有prototype
+exPrototype.createdCallback = function(){
+	//增加元素创建时的回调
+	//创建一个影子节点, 将当前自定义的标签封装到其中, 不然在此页面定义样式, 会影响全局
+	this.createShadowRoot().append(dom.importNode(scriptDom.getElementById('hello-world'),true));  //这里使用importNode是直接改变了其ownerDocument指向, 使其注入到document空间中
+	//createShadowRoot已弃用可用attachShadow({mode:'open'})代替
+	//this.append(dom.importNode(scriptDom.getElementById('hello-world'),true))  这样也可以使用自定义标签, 但是存在在此页面使用style时修改了其他元素样式
+}
+var hw = dom.registerElement('hello-world',exPrototype);//此方法注册自定义标签, 在dom空间内, 这个方法将要移除, 使用customElements.define()替换  https://developer.mozilla.org/en-US/docs/Web/API/Document/registerElement
+//customElements.define('helo-world',exPrototype);
+
+</script>
+</html>

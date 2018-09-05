@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+</body>
+<script>
+    fetch('./webAssembly.wasm')
+        .then(res=>res.arrayBuffer()) //将返回的对象转换成二进制数组
+        .then(a=>{console.log(a)})  //编译和实例化 ?? 有多少都会去编译吗
+        /*
+         * 感觉FileReader也可以
+         * 两个函数转换成二进制文件后占用空间由89字节变成了118字节, 当大量使用的时候会不会造成网络问题
+         *
+         * 上面相当于
+         *  .then(buffer=>WebAssembly.comple(buffer))  //编译
+         *  .then(module=>{
+         *      //这样需要开辟内存空间, c中的内存是手工管理的, 如果需要使用, 这里要申请内存
+         *      //new WebAssembly.Memary({initlal:256})
+         *      //变量映射表 WebAssembly.Table()  将js的变量和c变量进行映射
+         *       return new WebAssembly(module);
+         *  })
+         */
+        .then(mod=>mod.instance)
+        .then(res=>{
+            const {add,square} = res.exports; //导出 解构赋值, 转换使用, 对应了c中的两个函数名
+            console.log(add(1,2))
+        })
+</script>
+</html>
