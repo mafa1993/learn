@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>抛物线</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0
+    }
+    /*简单的浏览器兼容*/
+    /*设置初始样式*/
+    
+    .item,
+    .item2 {
+        width: 20px; //这里初始有个值, 但是动画是从0 0开始的, 有一个向上的趋势
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        top: 50px;
+        left: 20px;
+        background-color: #00aa00;
+        border-radius: 50%;
+    }
+    /*竖直运动*/
+    
+    .wraper {
+        animation: vertical-animation 2s .5s infinite; //动画名 一次播放的时间 延迟时间 次数(数字/infinite一直循环)
+        //animation-timing-function: cubic-bezier(.11, -.33, .55, .11);  //利用一个负的贝塞尔实现向上的动画
+        animation-timing-function: cubic-bezier(.27,-0.41,.4,.69);
+    }
+    /*水平运动, 匀直*/
+    
+    .wraper .item {
+        animation: hor-animation 2s linear .5s infinite;
+    }
+        
+    @-webkit-keyframes hor-animation {
+        0% {
+            transform: translateX(0px);
+        }
+        100% {
+            transform: translateX(400px);
+        }
+    }
+    
+    @-webkit-keyframes vertical-animation {
+        0% {
+            transform: translateY(0px);
+        }
+        100% {
+            transform: translateY(400px);
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="wraper">
+        <!--控制竖直运动-->
+        <div class="item">
+			<img height="80px" class="ball" src="./ball.jpeg">
+        </div>
+        <!--控制水平运动-->
+    </div>
+</body>
+
+</html>
