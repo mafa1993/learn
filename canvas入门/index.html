@@ -7,47 +7,79 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        canvas {
-            width: 300px;
-            height: 300px;
-        }
-
+        
+    html{
+        background-color: blueviolet
+    }
     </style>
 </head>
 <body>
-<canvas></canvas>
+<canvas height="600px" width="600px"></canvas>
 
 </body>
+<script type="text/javascript" src="./wave.js"></script>
 <script>
     const dom = document.getElementsByTagName('canvas')[0];
     const ctx = dom.getContext('2d');
-    /*x: a * (16 * Math.pow(Math.sin(step), 3)),
-     y: a * (13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 *
-     step))*/
+    let points = [];
+   
 
-    const drawHeart = (ctx, startX = 150, startY = 50, scale = 5) => {
+    const drawHeart = (ctx, startX = 200, startY = 180, scale = 10) => {
         ctx.save();
 
         ctx.beginPath();
         ctx.translate(startX, startY);
         ctx.rotate(Math.PI);
+        ctx.strokeStyle = 'pink';
+        ctx.lineWidth = 2;
 //        let all_point = [];
         for (let i = 0; i < 60; i++) {
 //            point = {
-            let x = (scale + 2) * (16 * Math.pow(Math.sin(i), 3)),
-                y = scale * (13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i));
+            const step = i / 50 * (Math.PI * 2); //计算步进的角度
+            let x = (scale + 2) * (16 * Math.pow(Math.sin(step), 3)),
+                y = scale * (13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 * step));
             ctx.lineTo(x, y);
 //            };
+            
         }
-        ctx.strokeStyle = 'pink';
-        ctx.lineWidth = 2;
-        //ctx.closePath(); 两点之间连接成闭合图形
-
+       
+        //ctx.closePath(); //两点之间连接成闭合图形
         ctx.stroke();
         ctx.restore();
         ctx.clip();
 
     };
     drawHeart(ctx);
+    let wave1 = new Wave({
+        canvasWitdh:400,
+        canvasHeight:400,
+        waveWidth:0.05,//y=Asin（Bx+c）+d波浪宽度，数越小越宽，周期B
+        waveHeight:4,//A值
+        speed:0.07,
+        xOffset:0
+    });
+    let wave2 = new Wave({
+        canvasWitdh:400,
+        canvasHeight:400,
+        waveWidth:0.04,//y=Asin（Bx+c）+d波浪宽度，数越小越宽，周期B
+        waveHeight:4,//A值
+        speed:0.04,
+        xOffset:0,
+        colors:['pink','red']
+    });
+    let nowRange = 0,
+        rangRane = 250; //动态效果使用
+   const draw = ()=>{
+        ctx.clearRect(0,0,400,400);  //每次清空
+        if(nowRange <= rangRane){
+            nowRange ++; //初始向上涨的动画过程
+        }
+        wave1.update({nowRange});
+        wave1.draw(ctx);
+        wave2.update({nowRange});
+        wave2.draw(ctx);
+        window.requestAnimationFrame(draw);
+    }
+    draw();
 </script>
 </html>
