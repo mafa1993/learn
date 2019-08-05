@@ -13,7 +13,8 @@
 <script>
     fetch('./webAssembly.wasm')
         .then(res=>res.arrayBuffer()) //将返回的对象转换成二进制数组
-        .then(a=>{console.log(a)})  //编译和实例化 ?? 有多少都会去编译吗
+		.then(WebAssembly.instantiate)
+        //.then(a=>{console.log(a)})  //编译和实例化 ?? 有多少都会去编译吗
         /*
          * 感觉FileReader也可以
          * 两个函数转换成二进制文件后占用空间由89字节变成了118字节, 当大量使用的时候会不会造成网络问题
