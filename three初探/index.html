@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>three初探->加载3d模型（gltf模型加载）</title>
+</head>
+<style>
+    canvas,div,body{
+        margin:0;
+        padding: 0;
+    }
+</style>
+<script src="three.js"></script>
+<script src="GLTFLoader.js"></script>
+<script src="./OrbitControls.js"></script> //轨道控制
+<script src="./javascript/example/DRACOLoader.js"></script> //如果对模型进行了压缩，解码用
+<body>
+
+</body>
+<script>
+    var container, //创建容器
+        carma, //眼睛
+        scene,  //场景
+        render, //渲染到界面
+        light,  //光
+        controls; //控制
+
+    function init() {
+        container = document.createElement('div');
+        document.body.appendChild(container); //添加容器
+        //创造眼睛，这里利用透视相机创建
+        carma = new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.22,1000); //视场（视角，默认50，人眼睛、一般为180度） 横纵比 近视面距离 远视面距离
+        carma.position.set(0,0,-1);
+        controls = new THREE.OrbitControls(carma); //给carma初始化一个轨道类型的控制器
+        controls.target.set(0,-0.2,-0.2); //设置旋转点，设置0,0,0好像是不会生效
+        controls.update();
+        //创建世界
+        scene = new THREE.Scene();
+        //创建光
+        light = new THREE.HemisphereLight(0xfff,0xdddddd); //设置半球光，天上有光，地面反射光
+        light.position.set(0,1,0);
+        //增加点光源
+        var pointLight=new THREE.PointLight();
+        pointLight.position.set(1,1,0);
+        scene.add(pointLight);
+        scene.add(light);
+        //创建GLTF加载器
+        var loader = new THREE.GLTFLoader().setPath("./models/model_one/"); //设置路径
+        //THREE.DRACOLoader.setDecoderPath('xx'); //设置解码后存放的目录
+        //loader.setDRACOLoader(new THREE.DRACOLoader()); //如果对gltf进行了压缩，这里进行解码，需要利用wasm，google的c++解码器
+        loader.load('scene.gltf',function (gltf) {
+            gltf.scene.scale.set(0.3,0.3,0.3); //如果模型调大 这里这样放大缩小模型
+            gltf.scene.position.set(0,-0.16,0); //设置模型的场景的位置
+            scene.add(gltf.scene); //将模型的场景加载到创建的场景中
+        });
+
+        //把眼睛看到的世界绘制到html
+        render = new THREE.WebGLRenderer({
+            antialias:true //设置抗锯齿
+        });
+
+        render.setPixelRatio(window.devicePixelRatio);  //window.devicePixelRatio 设置dpr为屏幕dpr，物理像素、逻辑像素 做多屏适配时需要注意
+        render.setSize(window.innerWidth,window.innerHeight);//设置render的大小为整个视窗
+        container.appendChild(render.domElement);
+
+        //增加辅助线
+        var helper = new THREE.AxesHelper();
+        //scene.add(helper);
+
+    }
+    init();
+    //让场景及时的运转
+    animate();
+    //开始渲染界面
+    function animate(){
+        window.requestAnimationFrame(animate);
+        render.render(scene,carma); //开始加载场景
+    }
+</script>
+</html>
