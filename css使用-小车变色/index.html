@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CSS更改汽车车漆颜色</title>
+    <style>
+        :root {
+            --ydUnit: 100%;
+        }
+
+        html, body {
+            height: var(--ydUnit);
+        }
+
+        body {
+            margin: 0;
+        }
+
+        img {
+            width: var(--ydUnit);
+            height: var(--ydUnit);
+        }
+
+        input {
+            width: var(--ydUnit);
+            height: var(--ydUnit);
+            padding: 0;
+            cursor: pointer;
+            position: absolute;
+            mix-blend-mode: hue;
+        }
+    </style>
+</head>
+<body>
+<input type="color"/>
+<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/18515/9284591662_38b0438418_h.jpg" alt="">
+</body>
+</html>
