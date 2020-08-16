@@ -1,0 +1,25 @@
+{
+  "name": "html5-games",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@babel/preset-typescript": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "npm": "^6.14.7",
+    "phaser": "^3.24.1",
+    "webpack": "^5.0.0-beta.24",
+    "webpack-cli": "4.0.0-beta.8",
+    "yarn": "^1.22.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "html-webpack-plugin": "^4.3.0"
+  },
+  "scripts": {
+    "dev": "webpack --mode development"
+  },
+  "author": "",
+  "license": "ISC"
+}
