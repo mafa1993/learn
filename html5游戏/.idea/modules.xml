@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/html5游戏.iml" filepath="$PROJECT_DIR$/.idea/html5游戏.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../slaravel/.idea/slaravel.iml" filepath="$PROJECT_DIR$/../../slaravel/.idea/slaravel.iml" />
     </modules>
   </component>
 </project>

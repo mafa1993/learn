@@ -14,7 +14,7 @@ export default defineComponent({
     setup( props ){
         const count:Ref<number> = ref(0); 
         const increment = () => {
-            count.value++ ;
+            count.value++;
         };
         return {
             count,
