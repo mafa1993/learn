@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<!--不能使用，因为commen.js在浏览器端不支持 <script src='./index.js'></script> -->
+<script>
+    // 问题就转成，怎么将读取的语句进行执行。两种方案 1.evel  2. new Function()
+    /** 1.解决导出问题  **/
+    // 存在变量污染的问题
+    var exports={};
+    eval('exports.default = function(a,b) {return a+b;}'); //如果代码里存在变量定义会造成变量污染
+    console.log(exports.default(1,2))  // 这里可以使用
+
+    /** 2.解决变量污染问题  使用闭包解决变量污染问题 **/
+    (function(exports,code){
+        eval(code);
+    })(exports,'exports.default = function(a,b) {return a+b;}');
+
+
+    /** 3.require函数实现 **/
+    function require(file) {
+        var exports = {};
+        (function(exports,code){
+            eval(code);
+        })(exports,'exports.default = function(a,b) {return a+b;}');
+        return exports;
+    } 
+
+    var add = require('add.js').default;
+    console.log(add(1,2))
+
+
+    /** 4.通过file那么 加载对应代码，依赖收集 **/
+    var conf = {
+        'add.js' : "exports.default = function(a,b) {return a+b;}",
+        'index.js' : "console.log(1)"
+    };
+
+    (function(list){
+        function require(file){
+            var exports = {};
+            (function(exports,code) {
+                eval(code);
+            })(exports,list[file])
+        }
+    })(conf)
+
+    //code根据映射生成
+</script>
+</html>
