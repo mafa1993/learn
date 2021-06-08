@@ -15,7 +15,7 @@ function  getModuleInfo(file) {
     const body = fs.readFileSync(file,'utf-8');
 
     // 代码字符串解析，分析依赖，相当于编译
-    const ast = parser.parser(body,{
+    const ast = parser.parse(body,{
         sourceType:'module'  // 根据什么类型 引入模块
     });
 
@@ -27,7 +27,7 @@ function  getModuleInfo(file) {
         ImportDeclaration({node}){
             const dirname = path.dirname(file);  // 获取路径
 
-            const absPath = './' + path.join(dirname,node); // 计算相对路径，相对于入口的路径
+            const absPath = './' + path.join(dirname,node.source.value); // 计算相对路径，相对于入口的路径
             deps[node.source.value] = absPath;
             
             
@@ -45,10 +45,41 @@ function  getModuleInfo(file) {
         code
     };
 
-    return moduleINfo;
+    return moduleInfo;
 
 }
 
 // 测试是否可以获取路径，依赖，代码
-const info = getModuleInfo('./src/index.js');
-console.log('info',info);   // node webpack.js
+// const info = getModuleInfo('./src/index.js');
+// console.log('info',info);   // node webpack.js
+
+/**
+ * 递归解析模块
+ * @param {*} file 
+ */
+function parseModules(file) {
+    const entry = getModuleInfo(file);  //分析入库
+
+    const temp = [entry];
+    const depsGraph = {};
+
+    // 递归调用
+    getDeps(temp,entry);  // 利用引用船只该表temp中的内容，递归遍历entry中的deps
+
+    temp.forEach((moduleInfo) => {
+        depsGraph[moduleInfo.file] = {
+            deps:moduleInfo.deps,
+            code:moduleInfo.code
+        }
+    })
+}
+
+
+function getDeps(temp,{deps}) {  // 解构复制deps
+    Object.keys(deps).forEach(key => {
+        const child = getModuleInfo(deps[key]);
+
+        temp.push(child);
+        getDeps(temp,child)
+    });
+}
