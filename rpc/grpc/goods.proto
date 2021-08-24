@@ -1,0 +1,21 @@
+syntax = "proto3"; // 指定proto版本
+
+package goods; // 指定默认包名
+
+option go_package = "./goods";
+  // 指定golang包名
+
+// 定义goods服务
+// 相当于go 中 type goodServic interface{}
+
+service GoodService {
+    // 相当于go中结构体内
+    rpc Get(Goods) returns (Goods){}
+}
+
+// 定义信息体 相当于go中 type Goods  struct{}
+message Goods{
+    // 相当于go中定义的结构体
+    int32 id = 1;
+    string name = 2;
+}

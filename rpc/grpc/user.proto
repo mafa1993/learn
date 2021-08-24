@@ -1,0 +1,41 @@
+syntax = "proto3";   // 定义版本，默认为proto2
+
+package user;  // go 包名
+
+option go_package = "./user"; // 如果和package不一致，会使用下面这个，一般会协程.:user 因为路径问题会报错, 新版protoc要求这个定义至少有个/
+
+message User { //定义消息的额格式，
+    int32 id = 1; // 无int类型，只用int32
+    string name = 2;
+    int32 age = 3;
+
+    Role role = 4;
+
+    map<string,string> dict = 5;  //map类型
+
+    message Role {    // 可以嵌套书写，相当于 type type User_Role struct{}
+        int32 id = 1;
+        string role_name = 2;
+
+        Status status = 3;
+
+        enum Status {  // 枚举类型  岘港与go中的常量
+            OK = 0;
+            FAIL = 1;
+        }
+    }
+}
+
+// service 相当于go中的接口
+// type UserService interface{ Auth(User) Response}
+service UserService {
+    rpc Auth(User) returns (Response){}  // rpc方式，调动Auth方法，返回值时Response  Auth的参数和returns的参数不能为空
+    // rpc 方法名（参数 使用message定义） returns（message 定义 返回的类型）
+}
+
+message Response{
+    string code = 1;
+    string token = 2;
+    User user = 3;
+}
+
