@@ -18,6 +18,6 @@
     "yog2-kernel": "1.9.1"
   },
   "devDependencies": {
-    "vue-loader": "^15.6.4"
+    "vue-loader": "^17.0.1"
   }
 }
